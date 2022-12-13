@@ -14,16 +14,19 @@ const MERKLE_ROOT =
 
 app.post('/gift', (req, res) => {
   // grab the parameters from the front-end here
-  const { name, proof } = req.body;
+  const { list } = req.body;
 
-  const isInTheList = verifyProof(proof, name, MERKLE_ROOT);
+  // verify all the names from the [list] payload
+  const response = list.map(({proof, name}) => {
+    const isInTheList = verifyProof(proof, name, MERKLE_ROOT);
+    if (isInTheList) {
+      return "You got a toy robot!";
+    } else {
+      return "You are not on the list :(";
+    }
+  })
 
-  if(isInTheList) {
-    res.send("You got a toy robot!");
-  }
-  else {
-    res.send("You are not on the list :(");
-  }
+  res.send(response);
 });
 
 app.listen(port, () => {

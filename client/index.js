@@ -8,15 +8,38 @@ const serverUrl = 'http://localhost:1225';
 const tree = new MerkleTree(niceList);
 
 async function main() {  
-  // This will be the lucky guy who will win the gift
-  const luckyGuy = "Robin Hessel Jr.";
-  const index = niceList.indexOf(luckyGuy);
+  const guys = [
+    // These will be the lucky guys who will win the gift
+    "Sidney Kertzmann",
+    "Miss Margarita Lowe Sr.",
+    "Dr. Olga Kassulke",
+    "Chris Windler",
+    "Robin Hessel Jr.",
+    "Alexander Franey",
+    "Traci McDermott",
+    "Anna Stehr",
+    "Norman Block",
+    "Mr. Janice Ryan",
+    // Adding a random name which is not in the list
+    "APPLE",
+  ];
 
-  // Proof
-  const proof = tree.getProof(index);
+  const data = guys.map((guy) => {
+    // Index of that guy in the list
+    const index = niceList.indexOf(guy);
+
+    // Proof
+    const proof = tree.getProof(index);
+
+    return {
+      index,
+      proof,
+      name: guy,
+    };
+  });
 
   const { data: gift } = await axios.post(`${serverUrl}/gift`, {
-    proof, name: luckyGuy
+    list: data
   });
 
   console.log({ gift });
